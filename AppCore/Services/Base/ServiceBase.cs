@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppCore.Service.Base
+namespace AppCore.Services.Base
 {
     public abstract class ServiceBase<TEntity> : IDisposable where TEntity : class,new()
     {

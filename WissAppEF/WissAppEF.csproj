@@ -58,6 +58,14 @@
     <Compile Include="Migrations\202002211725374_WissApp_v1.0.designer.cs">
       <DependentUpon>202002211725374_WissApp_v1.0.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002241655449_WissApp_v1.01.cs" />
+    <Compile Include="Migrations\202002241655449_WissApp_v1.01.designer.cs">
+      <DependentUpon>202002241655449_WissApp_v1.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002241715488_WissApp_v2.0.cs" />
+    <Compile Include="Migrations\202002241715488_WissApp_v2.0.designer.cs">
+      <DependentUpon>202002241715488_WissApp_v2.0.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,6 +82,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202002211725374_WissApp_v1.0.resx">
       <DependentUpon>202002211725374_WissApp_v1.0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002241655449_WissApp_v1.01.resx">
+      <DependentUpon>202002241655449_WissApp_v1.01.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002241715488_WissApp_v2.0.resx">
+      <DependentUpon>202002241715488_WissApp_v2.0.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

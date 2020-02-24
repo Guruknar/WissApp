@@ -29,7 +29,7 @@ namespace WissAppEntities.Entities
         [Column("E-Mail")]
         [Required]
         [MaxLength(200)]
-        public byte[] E_Mail { get; set; }
+        public string E_Mail { get; set; }
 
         [StringLength(300)]
         public string School { get; set; }
