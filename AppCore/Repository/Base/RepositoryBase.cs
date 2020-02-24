@@ -1,15 +1,15 @@
-﻿using AppCore.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace AppCore.Repository.Base
 {
     public abstract class RepositoryBase<TEntity> : IDisposable where TEntity : class, new()
     {
+
         #region Dispose,garbagecollector
         protected bool disposed = false;
         protected virtual void Dispose(bool disposing)
@@ -24,9 +24,9 @@ namespace AppCore.Repository.Base
         }
         #endregion
 
-        protected IDBcontext db;
-        //protected DbContext db;
-        public RepositoryBase(IDBcontext _db)
+        private DbContext db;
+
+        public RepositoryBase(DbContext _db)
         {
             db = _db;
         }
@@ -39,11 +39,154 @@ namespace AppCore.Repository.Base
             }
             catch (Exception exc)
             {
-
                 throw exc;
             }
             
         }
+        
+        public virtual List<TEntity> GetEntities(Expression<Func<TEntity, bool>> predicate) //***** filtreye göre almanın yolu
+        {
+            try
+            {
+                return db.Set<TEntity>().Where(predicate).ToList();
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
+        public virtual IQueryable<TEntity> GetEntityQuery()
+        {
+            try
+            {
+                return db.Set<TEntity>().AsQueryable();
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
+        public virtual IQueryable<TEntity> GetEntityQuery(string[] entitiesToInclude)//lazyloading çalışmazise kullanılsın diye
+        {
+            try
+            {
+                DbQuery<TEntity> entityQuery = db.Set<TEntity>();
+                foreach(string entityToInclude in entitiesToInclude)
+                {
+                    entityQuery = entityQuery.Include(entityToInclude);
+                }
+                return entityQuery.AsQueryable();
+            }
+            catch (Exception exc)
+            {
+
+                throw exc;
+            }
+        }
+
+        public virtual IQueryable<TEntity> GetEntityQuery(Expression<Func<TEntity, bool>> predicate)
+        {
+
+            try
+            {
+                return db.Set<TEntity>().AsQueryable().Where(predicate);
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
+        public virtual TEntity GetEntity(int id)
+        {
+            try
+            {
+                return db.Set<TEntity>().Find(id);
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
+        public virtual TEntity GetEntity(Expression<Func<TEntity, bool>> predicate)
+        {
+            try
+            {
+                return db.Set<TEntity>().SingleOrDefault(predicate);
+            }
+            catch (Exception exc)
+            {
+
+                throw exc;
+            }
+        }
+
+        public virtual void AddEntity(TEntity entity)
+        {
+            try
+            {
+                db.Set<TEntity>().Add(entity);// db.SaveChanges(); başka bir class üzerinde yapıcaz.
+            }
+            catch (Exception exc)
+            {
+
+                throw exc;
+            }
+        }
+
+        public virtual void UpdateEntity(TEntity entity)
+        {
+            try
+            {
+                db.Entry(entity).State = EntityState.Modified; // db.SaveChanges(); başka bir class üzerinde yapıcaz.
+            }
+            catch (Exception exc)
+            {
+
+                throw exc;
+            }
+        }
+
+        public virtual void DeleteEntity(int id)
+        {
+            try
+            {
+                //var entity1 = db.Set<TEntity>().Find(id);
+                var entity = GetEntity(id);
+                DeleteEntity(entity);
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+        }
+
+        public virtual void DeleteEntity(TEntity entity)
+        {
+            try
+            {
+                if (entity.GetType().GetProperty("IsDeleted") != null)
+                {
+                    TEntity _entity = entity;
+                    _entity.GetType().GetProperty("IsDeleted").SetValue(_entity, true);
+                    UpdateEntity(_entity);
+                }
+                else
+                {
+                    db.Set<TEntity>().Remove(entity);
+                }
+            }
+            catch (Exception exc)
+            {
+
+                throw exc;
+            }
+        }
+
+
 
 
 
