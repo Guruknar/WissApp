@@ -53,5 +53,35 @@ namespace WissAppWebApi.Controllers
                 return BadRequest();
             }
         }
+
+        public IHttpActionResult Get(int id)
+        {
+            try
+            {
+                var entity = userService.GetEntity(id);
+                var model = Mapping.mapper.Map<UsersModel>(entity);
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+
+            }
+        }
+
+        public IHttpActionResult Post(UsersModel usersModel)
+        {
+            try
+            {
+                var entity = Mapping.mapper.Map<Users>(usersModel);
+                userService.AddEntity(entity);
+                var model = Mapping.mapper.Map<UsersModel>(entity);
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest(); 
+            }
+        }
     }
 }
