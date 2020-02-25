@@ -17,6 +17,7 @@ namespace WissAppWebApi // WissAppWebApi.Configs
             mapperConfiguration = new MapperConfiguration( c =>
             {
                 c.AddProfile<UsersProfile>();
+                c.AddProfile<UsersModelProfile>();
             });
         }
 
@@ -26,7 +27,15 @@ namespace WissAppWebApi // WissAppWebApi.Configs
     {
         public UsersProfile()
         {
-            CreateMap<Users, UsersModel>().ReverseMap();
+            CreateMap<Users, UsersModel>().ForMember(d => d.Password, o => o.Ignore());
+        }
+    }
+
+    public class UsersModelProfile : Profile
+    {
+        public UsersModelProfile()
+        {
+            CreateMap<UsersModel, Users>();
         }
     }
 

@@ -17,7 +17,8 @@ using WissAppWebApi.Models;
 namespace WissAppWebApi.Controllers
 {
     [RoutePrefix("api/Users")]
-   
+    //[ClaimsAuthorize(ClaimType = "role", ClaimValue = "Admin,User")]
+    [ClaimsAuthorize(ClaimType = "role", ClaimValue = "Admin")]
     public class UsersController : ApiController
     {
         DbContext db;
@@ -29,6 +30,7 @@ namespace WissAppWebApi.Controllers
             userService = new Service<Users>(db);
         }
 
+        //[AllowAnonymous]
         public IHttpActionResult Get()
         {
             try
@@ -58,7 +60,6 @@ namespace WissAppWebApi.Controllers
             }
         }
 
-        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Get(int id)
         {
             try
@@ -74,7 +75,6 @@ namespace WissAppWebApi.Controllers
             }
         }
 
-        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Post(UsersModel usersModel)
         {
             try
@@ -90,7 +90,6 @@ namespace WissAppWebApi.Controllers
             }
         }
 
-        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Put(UsersModel usersModel)
         {
             try
@@ -116,7 +115,6 @@ namespace WissAppWebApi.Controllers
             }
         }
 
-        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Delete(int id)
         {
             try
@@ -134,7 +132,6 @@ namespace WissAppWebApi.Controllers
         }
         
         [Route("GetAll")]
-        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult GetAll()
         {
             try

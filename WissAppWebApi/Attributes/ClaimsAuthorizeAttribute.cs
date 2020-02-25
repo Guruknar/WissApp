@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
@@ -16,12 +18,16 @@ namespace WissAppWebApi.Attributes
         public override Task OnAuthorizationAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
             var principal = actionContext.RequestContext.Principal as ClaimsPrincipal;
-            if(!principal.Identity.IsAuthenticated)
+            if(actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any() || actionContext.ControllerContext.ControllerDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any())
+            {
+                return Task.FromResult<object>(null);
+            }
+            if (!principal.Identity.IsAuthenticated)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 return Task.FromResult<object>(null);
             }
-            if(!(principal.HasClaim(e => e.Type.ToLower().Equals(ClaimType.ToLower()) && ClaimValue.ToLower().Equals(e.Value.ToLower()))))
+            if(!(principal.HasClaim(e => e.Type.ToLower().Equals(ClaimType.ToLower()) && ClaimValue.ToLower().Contains(e.Value.ToLower()))))
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 return Task.FromResult<object>(null);
