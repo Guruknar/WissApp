@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -13,7 +14,8 @@ namespace WissAppWebApi.Configs
 
         static UserConfig()
         {
-            if(_loggedOutUsers == null)
+            Debug.WriteLine("static constructor");
+            if (_loggedOutUsers == null)
             {
                 _loggedOutUsers = new List<string>();
             }

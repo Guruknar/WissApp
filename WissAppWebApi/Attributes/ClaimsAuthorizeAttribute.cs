@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using WissAppWebApi.Configs;
 
 namespace WissAppWebApi.Attributes
 {
@@ -27,7 +28,12 @@ namespace WissAppWebApi.Attributes
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 return Task.FromResult<object>(null);
             }
-            if(!(principal.HasClaim(e => e.Type.ToLower().Equals(ClaimType.ToLower()) && ClaimValue.ToLower().Contains(e.Value.ToLower()))))
+            if(UserConfig.GetLoggedOutUsers().Contains(principal.FindFirst(e => e.Type == "user").Value))
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
+                return Task.FromResult<object>(null);
+            }
+            if (!(principal.HasClaim(e => e.Type.ToLower().Equals(ClaimType.ToLower()) && ClaimValue.ToLower().Contains(e.Value.ToLower()))))
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 return Task.FromResult<object>(null);
