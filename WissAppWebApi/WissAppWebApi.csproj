@@ -115,6 +115,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\ClaimsAuthorizeAttribute.cs" />
     <Compile Include="Configs\MappingConfig.cs" />
+    <Compile Include="Configs\UserConfig.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -8,10 +8,12 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web.Http;
 using WissAppEF.Contexts;
 using WissAppEntities.Entities;
 using WissAppWebApi.Attributes;
+using WissAppWebApi.Configs;
 using WissAppWebApi.Models;
 
 namespace WissAppWebApi.Controllers
@@ -145,6 +147,20 @@ namespace WissAppWebApi.Controllers
 
                 return BadRequest();
             }
+        }
+
+        [Route("Logout")]
+        [HttpGet]
+        public IHttpActionResult Logout()
+        {
+            var principal = RequestContext.Principal as ClaimsPrincipal;
+            if(principal.Identity.IsAuthenticated)
+            {
+                UserConfig.AddLoggedOutUser(principal.FindFirst(e => e.Type == "user").Value);
+                return Ok("User logged out.");
+            }
+            return BadRequest("User didn't login.");
+            
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using WissAppEF.Contexts;
 using WissAppEntities.Entities;
+using WissAppWebApi.Configs;
 
 namespace WissAppWebApi.Providers
 {
@@ -28,6 +29,7 @@ namespace WissAppWebApi.Providers
                     var user = userService.GetEntity(e => e.UserName == context.UserName && e.Password == context.Password && e.IsActive == true);
                     if(user != null)
                     {
+                        UserConfig.RemoveLoggedOutUser(user.UserName);
                         var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                         identity.AddClaim(new Claim("user", user.UserName));
                         identity.AddClaim(new Claim("role", user.Roles.Name));
@@ -41,6 +43,12 @@ namespace WissAppWebApi.Providers
                     
             }
 
+        }
+
+        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
+        {
+            var accesToken = context.AccessToken;
+            return Task.FromResult<object>(null);
         }
     }
 }
