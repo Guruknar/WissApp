@@ -1,6 +1,7 @@
 ﻿using AppCore.Services;
 using AppCore.Services.Base;
 using AutoMapper.QueryableExtensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,10 +11,13 @@ using System.Net.Http;
 using System.Web.Http;
 using WissAppEF.Contexts;
 using WissAppEntities.Entities;
+using WissAppWebApi.Attributes;
 using WissAppWebApi.Models;
 
 namespace WissAppWebApi.Controllers
 {
+    [RoutePrefix("api/Users")]
+   
     public class UsersController : ApiController
     {
         DbContext db;
@@ -54,6 +58,7 @@ namespace WissAppWebApi.Controllers
             }
         }
 
+        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Get(int id)
         {
             try
@@ -69,6 +74,7 @@ namespace WissAppWebApi.Controllers
             }
         }
 
+        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
         public IHttpActionResult Post(UsersModel usersModel)
         {
             try
@@ -81,6 +87,66 @@ namespace WissAppWebApi.Controllers
             catch (Exception)
             {
                 return BadRequest(); 
+            }
+        }
+
+        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
+        public IHttpActionResult Put(UsersModel usersModel)
+        {
+            try
+            {
+                var entity = userService.GetEntity(usersModel.Id);
+                entity.BirthDate = usersModel.BirthDate;
+                entity.E_Mail = usersModel.E_Mail;
+                entity.Gender = usersModel.Gender;
+                entity.IsActive = usersModel.IsActive;
+                entity.Location = usersModel.Location;
+                entity.Password = usersModel.Password;
+                entity.RoleId = usersModel.RoleId;
+                entity.School = usersModel.School;
+                entity.UserName = usersModel.UserName;
+
+                userService.UpdateEntity(entity);
+                var model = Mapping.mapper.Map<UsersModel>(entity);
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                var entity = userService.GetEntity(id);
+                userService.DeleteEntity(id);
+                var model = Mapping.mapper.Map<UsersModel>(entity);
+                return Ok(model);
+            }
+            catch (Exception exc)
+            {
+
+                return BadRequest();
+            }
+        }
+        
+        [Route("GetAll")]
+        [ClaimsAuthorize(ClaimType = "role", ClaimValue = "admin")]
+        public IHttpActionResult GetAll()
+        {
+            try
+            {
+                var entities = userService.GetEntities();
+                var resultEntities = JsonConvert.SerializeObject(entities, Formatting.None, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });// ****-******_*****
+                return Ok(JsonConvert.DeserializeObject(resultEntities));
+            }
+            catch (Exception exc)
+            {
+
+                return BadRequest();
             }
         }
     }
