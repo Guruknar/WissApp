@@ -14,7 +14,12 @@ namespace WissAppWebApi.Configs
 
         static UserConfig()
         {
-            Debug.WriteLine("static constructor");
+            if (_loggedOutUsers == null)
+                _loggedOutUsers = new List<string>();
+        }
+
+        private static void CheckLoggedOutUsers()
+        {
             if (_loggedOutUsers == null)
             {
                 _loggedOutUsers = new List<string>();
@@ -30,6 +35,7 @@ namespace WissAppWebApi.Configs
 
         public static void AddLoggedOutUser(string userName)
         {
+            CheckLoggedOutUsers();
             if (!_loggedOutUsers.Contains(userName))
                 _loggedOutUsers.Add(userName);
         }

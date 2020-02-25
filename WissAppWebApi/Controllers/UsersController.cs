@@ -162,5 +162,13 @@ namespace WissAppWebApi.Controllers
             return BadRequest("User didn't login.");
             
         }
+
+        [Route("LoggedoutUsers")]
+        [AllowAnonymous]
+        [HttpGet]
+        public IHttpActionResult LoggedoutUsers()
+        {
+            return Ok(UserConfig.GetLoggedOutUsers());
+        }
     }
 }
