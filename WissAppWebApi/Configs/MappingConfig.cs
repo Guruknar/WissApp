@@ -19,6 +19,7 @@ namespace WissAppWebApi // WissAppWebApi.Configs
                 c.AddProfile<UsersProfile>();
                 c.AddProfile<UsersModelProfile>();
                 c.AddProfile<RolesProfile>();
+                c.AddProfile<UsersMessagesProfile>();
             });
         }
 
@@ -47,6 +48,18 @@ namespace WissAppWebApi // WissAppWebApi.Configs
         public RolesProfile()
         {
             CreateMap<Roles, RolesModel>().ReverseMap();
+        }
+    }
+
+    public class UsersMessagesProfile : Profile
+    {
+        public UsersMessagesProfile()
+        {
+            CreateMap<UsersMessages, UsersMessagesModel>()
+                .ForMember(d => d.Message, o => o.MapFrom(s => s.Messages.Message))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Messages.Date))
+                .ForMember(d => d.Sender, o => o.MapFrom(s => s.Senders.UserName))
+                .ForMember(d => d.Sender, o => o.MapFrom(s => s.Receivers.UserName));
         }
     }
 
