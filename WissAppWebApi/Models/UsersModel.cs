@@ -27,5 +27,10 @@ namespace WissAppWebApi.Models
 
         public bool IsActive { get; set; }
 
+        public string Role { get; set; }
+
+        public RolesModel Roles { get; set; }
+
+
     }
 }

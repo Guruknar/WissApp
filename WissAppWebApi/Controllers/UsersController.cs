@@ -37,7 +37,7 @@ namespace WissAppWebApi.Controllers
         {
             try
             {
-                var entities = userService.GetEntities();
+                var entities = userService.GetEntities(e => e.IsDeleted == false);// modeli kullanıyoruz ondan altta model 
                 //var model = entities.Select(e => new UsersModel()
                 //{
                 //    Id = e.Id,
@@ -53,7 +53,7 @@ namespace WissAppWebApi.Controllers
                 //}).ToList();
                 //var model = Mapping.mapper.Map<List<Users>, List<UsersModel>>(entities); //source-destination, neyi değiştirmek istiyorsan(Üstteki işlemi bu şekilde automapper sayesinde yapıyoruz) 1. Kullanımı bu
                 //var model = Mapping.mapper.Map<List<UsersModel>>(entities);// başka bir kullanımı
-                var model = userService.GetEntityQuery().ProjectTo<UsersModel>(MappingConfig.mapperConfiguration).ToList();//başkabir kullanım daha
+                var model = userService.GetEntityQuery(e => e.IsDeleted == false).ProjectTo<UsersModel>(MappingConfig.mapperConfiguration).ToList();//başkabir kullanım daha
                 return Ok(model);
             }
             catch(Exception)
@@ -66,7 +66,7 @@ namespace WissAppWebApi.Controllers
         {
             try
             {
-                var entity = userService.GetEntity(id);
+                var entity = userService.GetEntity(e => e.Id == id && e.IsDeleted == false);
                 var model = Mapping.mapper.Map<UsersModel>(entity);
                 return Ok(model);
             }
@@ -82,6 +82,7 @@ namespace WissAppWebApi.Controllers
             try
             {
                 var entity = Mapping.mapper.Map<Users>(usersModel);
+                entity.IsActive = true;// yeni bir kullanıcı eklediğimizden true yapıyoruz
                 userService.AddEntity(entity);
                 var model = Mapping.mapper.Map<UsersModel>(entity);
                 return Ok(model);
@@ -96,7 +97,9 @@ namespace WissAppWebApi.Controllers
         {
             try
             {
-                var entity = userService.GetEntity(usersModel.Id);
+                
+                var entity = userService.GetEntity(e => e.Id == usersModel.Id && e.IsDeleted == false);
+                //var entity = userService.GetEntity(usersModel.Id);
                 entity.BirthDate = usersModel.BirthDate;
                 entity.E_Mail = usersModel.E_Mail;
                 entity.Gender = usersModel.Gender;
@@ -121,7 +124,7 @@ namespace WissAppWebApi.Controllers
         {
             try
             {
-                var entity = userService.GetEntity(id);
+                var entity = userService.GetEntity(e => e.Id == id && e.IsDeleted == false);
                 userService.DeleteEntity(id);
                 var model = Mapping.mapper.Map<UsersModel>(entity);
                 return Ok(model);

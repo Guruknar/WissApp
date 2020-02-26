@@ -18,6 +18,7 @@ namespace WissAppWebApi // WissAppWebApi.Configs
             {
                 c.AddProfile<UsersProfile>();
                 c.AddProfile<UsersModelProfile>();
+                c.AddProfile<RolesProfile>();
             });
         }
 
@@ -27,7 +28,9 @@ namespace WissAppWebApi // WissAppWebApi.Configs
     {
         public UsersProfile()
         {
-            CreateMap<Users, UsersModel>().ForMember(d => d.Password, o => o.Ignore());
+            CreateMap<Users, UsersModel>()
+                .ForMember(d => d.Password, o => o.Ignore())
+                .ForMember(d => d.Role, o => o.MapFrom(s => s.Roles.Name));
         }
     }
 
@@ -36,6 +39,14 @@ namespace WissAppWebApi // WissAppWebApi.Configs
         public UsersModelProfile()
         {
             CreateMap<UsersModel, Users>();
+        }
+    }
+
+    public class RolesProfile :Profile
+    {
+        public RolesProfile()
+        {
+            CreateMap<Roles, RolesModel>().ReverseMap();
         }
     }
 

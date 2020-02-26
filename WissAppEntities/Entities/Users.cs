@@ -45,6 +45,8 @@ namespace WissAppEntities.Entities
 
         public bool IsActive { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public virtual Roles Roles { get; set; }
 
 
