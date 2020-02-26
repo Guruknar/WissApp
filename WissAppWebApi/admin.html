@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "api/Users",
+                type: "GET",
+                contentType: "application/json",
+                headers: { "Authorization": "bearer l_jfZ_DvAiJ7O1YbLhFbkzeSTVuqvhBUmW5qk9kAbbs6RwfXIdixagcxa7B61v4iWC4BlSzVHcJhd7UxbbijmLjXe-4eTHIw0Th_g2JYLJKwafstQ7wIaEcBJLxkvt2hGxrBMxWjU7aYfsW8iQqtYpvgkD_RT6HiVs4-rqatp9fD4dFXNCbjxbefyqrSh5ckmOeNuaCa0TchJEVlMfv6otpJJALn1z6VdWHbGtFGX8I" },
+                success: function (response) {
+                    var html = '<table id="t_users" class="display" style="width: 100%">';
+                    html += '<thead>';
+                    html += '<tr>';
+                    html += '<th>User Name</th>';
+                    html += '<th>E-Mail</th>';
+                    html += '<th>School</th>';
+                    html += '<th>Location</th>';
+                    html += '</tr>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                    $.each(response, function (i, data) {
+                        html += '<tr>';
+                        html += '<td>' + data.UserName + '</td>';
+                        html += '<td>' + data.E_Mail + '</td>';
+                        html += '<td>' + data.School + '</td>';
+                        html += '<td>' + data.Location + '</td>';
+                        html += '</tr>';
+                    });
+                    html += '</tbody>'
+
+                    //html += '<tfoot>'
+                    //html += '<tr>';
+                    //html += '<th>User Name</th>';
+                    //html += '<th>E-Mail</th>';
+                    //html += '<th>School</th>';
+                    //html += '<th>Location</th>';
+                    //html += '</tr>';
+                    //html += '</tfoot>';
+
+                    html += '</table>'
+                    $("#div_users").html(html);
+                    $('#t_users').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+                        }
+                    });
+                },
+                error: function () {
+                    alert("An error occured!");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Admin</h2>
+    <div id="div_users" style="width: 90%; margin: 0px auto 0px auto;">
+
+    </div>
+</body>
+</html>
