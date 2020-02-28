@@ -34,6 +34,6 @@ textarea {
 .d_login{
     padding-top: 15px;
 }
-#d_users {
-    padding-top:20px;
+#d_usermessages {
+    padding-top: 20px !important;
 }

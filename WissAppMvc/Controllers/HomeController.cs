@@ -30,14 +30,9 @@ namespace WissAppMvc.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var userMessages = userMessagesService.GetEntities(e => e.Senders.UserName == User.Identity.Name || e.Receivers.UserName == User.Identity.Name || e.Receivers == null);
+            var userMessages = userMessagesService.GetEntities(e => e.Senders.UserName == User.Identity.Name || e.Receivers.UserName == User.Identity.Name);
 
-            var users = userMessages.Select(e => e.Receivers == null ? new UsersModel
-            {
-                UserId = e.SenderId,
-                UserName = e.Senders.UserName,
-                Broadcast = true,
-            } : (e.Receivers.UserName == User.Identity.Name ? new UsersModel
+            var users = userMessages.Select(e => e.Receivers.UserName == User.Identity.Name ? new UsersModel
             {
                 UserId = e.SenderId,
                 UserName = e.Senders.UserName
@@ -46,9 +41,9 @@ namespace WissAppMvc.Controllers
             {
                 UserId = e.ReceiverId ?? 0,
                 UserName = e.Receivers.UserName,
-            })).ToList();
-            //users = users.Where(e => e.Broadcast == false).Distinct(new UsersModelComparer()).ToList();//utils comparer class'ı
-            users = users.Where(e => e.Broadcast == false).GroupBy(e => new
+            }).ToList();
+            //users = users.Distinct(new UsersModelComparer()).ToList();//utils comparer class'ı
+            users = users.GroupBy(e => new
             {
                 e.UserId,
                 e.UserName
@@ -62,8 +57,31 @@ namespace WissAppMvc.Controllers
             var model = new HomeIndexViewModel()
             {
                 Users = users,
+                Messages = new List<MessagesModel>()
             };
             return View(model);
+        }
+
+        [Authorize]
+        public ActionResult Messages(int id)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                var userMessages = userMessagesService.GetEntities(e => (e.Senders.UserName == User.Identity.Name && e.ReceiverId == id) || (e.Receivers.UserName == User.Identity.Name && e.SenderId == id)).Select(e => new MessagesModel
+                {
+                    Message = e.Messages.Message,
+                    Date = e.Messages.Date.ToShortDateString() + " " + e.Messages.Date.ToLongTimeString(),
+                    User = e.SenderId == id ? e.Senders.UserName : e.Receivers.UserName,
+                    Sent = e.SenderId == id
+                }).ToList();
+                var model = new HomeIndexViewModel
+                {
+                    Messages = userMessages,
+                    Users = new List<UsersModel>(),
+                };
+                return PartialView("_Messages", model);
+            }
+            return new EmptyResult();
         }
 
         public ActionResult Login()

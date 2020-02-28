@@ -9,6 +9,7 @@ namespace WissAppMvc.Models.ViewModels
     public class HomeIndexViewModel
     {
         public List<UsersModel> Users { get; set; }
+        public List<MessagesModel> Messages { get; set; }
 
 
     }
