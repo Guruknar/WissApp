@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,14 +7,9 @@ namespace WissAppMvc.Models
 {
     public class UsersModel
     {
-        [Required]
-        [StringLength(50)]
+        public int UserId { get; set; }
         public string UserName { get; set; }
-
-        [Required]
-        [StringLength(10)]
-        public string Password { get; set; }
-
-        public bool RememberMe { get; set; }
+        public bool Broadcast { get; set; } = false;
+        public int MessageCount { get; set; }
     }
 }
