@@ -1,5 +1,7 @@
 ﻿@model HomeIndexViewModel
 
+
+
 @foreach (var message in Model.Messages)
 {
     if (message.Sent)
@@ -13,3 +15,5 @@
     <br />
 
 }
+
+@TempData["validation"]

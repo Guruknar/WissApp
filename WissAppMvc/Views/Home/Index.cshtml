@@ -27,13 +27,31 @@ var ajaxOptions = new AjaxOptions()
                     </table>*@
                      @*<span class="badge badge-light">@user.MessageCount</span>*@
                     @*@Ajax.ActionLink(user.UserName, "Messages", "Home", new { id = user.UserId }, ajaxOptions)*@
-                    <a data-ajax="true" class="a_user" data-ajax-mode="replace" data-ajax-update="#d_messages" href="/Home/Messages/@user.UserId"><span class="badge badge-light">@user.MessageCount</span>&nbsp;&nbsp;@user.UserName</a>
+                    <a data-ajax="true" class="a_user" data-ajax-mode="replace" data-ajax-update="#d_messages" data-id="@user.UserId" href="/Home/Messages/@user.UserId"><span class="badge badge-light">@user.MessageCount</span>&nbsp;&nbsp;@user.UserName</a>
                 </li>
             }
         </ul>
     </div>
-    <div class="col-md-9" id="d_messages">
-        @Html.Partial("_Messages", Model)
+    <div class="col-md-9"  >
+        <div id="d_messages" style="height: 400px; width: 100%; overflow: auto;">
+            @Html.Partial("_Messages", Model)
+        </div>
+        <div style="width: 100%;">
+            @using (Ajax.BeginForm("Message", ajaxOptions))
+            {
+                <input type="text" name="ReceiverId" id="ReceiverId" value="" />
+                <table style="width: 100%">
+                    <tr>
+                        <td style="width: 90%">
+                            @Html.TextBoxFor(e => e.Message, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-info">Send</button>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
     </div>
 </div>
 
@@ -63,6 +81,9 @@ var ajaxOptions = new AjaxOptions()
                 ul.find('li.active').removeClass('active'); // 3. yöntem
 
                 li.addClass('active');
+
+                //$("#ReceiverId").val($(this).attr("data-id")); // alttaki daha iyi yöntem
+                $("#ReceiverId").val($(this).data("id"));
             });
         });
     </script>
